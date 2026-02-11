@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instant Compliance Audit | Is Your Marketing Compliant?</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#002B5B',
+            'navy-light': '#003d7a',
+            'navy-dark': '#001f42',
+            violation: '#DC2626',
+            'violation-bg': '#FEF2F2',
+            warning: '#F59E0B',
+            'warning-bg': '#FFFBEB',
+            passed: '#10B981',
+            'passed-bg': '#ECFDF5',
+            brand: '#3B5BDB',
+            'brand-light': '#4C6EF5',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+    .upload-zone {
+      background: linear-gradient(135deg, rgba(59,91,219,0.02) 0%, rgba(59,91,219,0.06) 100%);
+      border: 2px dashed #CBD5E1;
+      transition: all 0.3s ease;
+    }
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: #3B5BDB;
+      background: linear-gradient(135deg, rgba(59,91,219,0.04) 0%, rgba(59,91,219,0.10) 100%);
+      transform: scale(1.005);
+    }
+    .upload-zone.drag-over {
+      box-shadow: 0 0 0 4px rgba(59,91,219,0.15);
+    }
+
+    .toggle-slider {
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .page-transition {
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-bar-fill {
+      animation: progressFill 3s ease-in-out forwards;
+    }
+    @keyframes progressFill {
+      0% { width: 0%; }
+      15% { width: 12%; }
+      40% { width: 45%; }
+      60% { width: 62%; }
+      80% { width: 85%; }
+      100% { width: 100%; }
+    }
+
+    .progress-bar-indeterminate {
+      width: 40%;
+      animation: indeterminate 1.5s ease-in-out infinite;
+    }
+    @keyframes indeterminate {
+      0% { margin-left: 0%; }
+      50% { margin-left: 60%; }
+      100% { margin-left: 0%; }
+    }
+
+    .progress-bar-complete {
+      width: 100%;
+      transition: width 0.4s ease;
+    }
+
+    .error-toast {
+      animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 4.7s forwards;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-12px); }
+    }
+
+    .finding-card {
+      transition: all 0.2s ease;
+    }
+    .finding-card:hover {
+      transform: translateX(3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .finding-card.active-highlight {
+      box-shadow: 0 0 0 2px #3B5BDB, 0 4px 16px rgba(59,91,219,0.15);
+      transform: translateX(3px);
+    }
+
+    .annotation-marker {
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .annotation-marker:hover {
+      transform: translate(-50%, -50%) scale(1.2);
+      z-index: 20 !important;
+    }
+    .annotation-marker.active {
+      transform: translate(-50%, -50%) scale(1.3);
+      z-index: 20 !important;
+    }
+    .annotation-marker .marker-pulse {
+      animation: markerPulse 1.5s ease-out infinite;
+    }
+    @keyframes markerPulse {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    .annotation-line {
+      pointer-events: none;
+    }
+
+    .marker-tooltip {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+    }
+    .annotation-marker:hover .marker-tooltip,
+    .annotation-marker.active .marker-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-backdrop {
+      animation: backdropIn 0.25s ease-out;
+    }
+    @keyframes backdropIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-content {
+      animation: modalIn 0.3s ease-out;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .shimmer {
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .pulse-dot {
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .check-step {
+      animation: checkIn 0.4s ease-out forwards;
+      opacity: 0;
+    }
+    @keyframes checkIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Custom scrollbar for findings */
+    .findings-scroll::-webkit-scrollbar { width: 5px; }
+    .findings-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+    .findings-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .findings-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    /* Responsive image height */
+    @media (min-width: 1024px) {
+      #preview-image, #preview-video {
+        max-height: 520px !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-white min-h-screen">
+
+  <!-- ======================== PAGE 1: HOME ======================== -->
+  <div id="page-home" class="min-h-screen flex flex-col">
+
+    <!-- Nav -->
+    <nav class="w-full py-5 px-6">
+      <div class="max-w-5xl mx-auto flex items-center justify-center">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 bg-brand rounded-xl flex items-center justify-center shadow-md shadow-brand/25">
+            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+          </div>
+          <span class="text-navy font-bold text-lg tracking-tight">Instant Compliance Audit</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <main class="flex-1 flex flex-col items-center justify-center px-6 -mt-8">
+      <div class="max-w-2xl w-full text-center">
+
+        <h1 class="text-4xl md:text-5xl font-extrabold text-navy leading-tight tracking-tight mt-6 mb-6">
+          Is Your Marketing<br/>Compliant?
+        </h1>
+        <p class="text-slate-500 text-lg mb-12 max-w-md mx-auto">
+          AI-powered regulatory scanning for modern financial institutions.
+        </p>
+
+        <!-- Toggle: MiCAR vs MiFID II -->
+        <div class="flex items-center justify-center mb-8">
+          <div class="inline-flex items-center bg-slate-100 rounded-full p-1 gap-1">
+            <button id="seg-micar" onclick="selectFramework('micar')" class="px-5 py-2 text-sm font-semibold rounded-full transition-all bg-white text-navy shadow-sm">MiCAR</button>
+            <button id="seg-mifid" onclick="selectFramework('mifid')" class="px-5 py-2 text-sm font-semibold rounded-full transition-all text-slate-400">MiFID II</button>
+          </div>
+        </div>
+
+        <!-- Upload Zone -->
+        <div
+          id="upload-zone"
+          class="upload-zone rounded-2xl p-12 md:p-16 cursor-pointer relative max-w-xl mx-auto"
+          onclick="document.getElementById('file-input').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)"
+        >
+          <input type="file" id="file-input" class="hidden" accept="image/*,video/mp4,.pdf" onchange="handleFileSelect(event)" />
+
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
+              <svg class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-navy font-semibold text-lg">Upload your ad creative</p>
+              <p class="text-slate-400 text-sm mt-1">
+                To run a free <span class="font-semibold text-navy" id="scan-type-label">MiCAR</span> scan
+              </p>
+            </div>
+            <button class="mt-2 bg-brand hover:bg-brand-light text-white font-semibold px-7 py-2.5 rounded-full shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 hover:-translate-y-0.5 text-sm" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+              Browse Files
+            </button>
+            <p class="text-slate-400 text-xs mt-1">Supports PDF, JPG, PNG, or MP4 (Max 50MB)</p>
+          </div>
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="flex items-center justify-center gap-8 mt-8 text-sm text-slate-400">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+            Bank-grade Encryption
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+            </svg>
+            Results in &lt; 60s
+          </div>
+          <div id="scans-remaining" class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span id="scans-remaining-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trusted By -->
+      <div class="mt-16 mb-10 text-center">
+        <p class="text-xs font-semibold text-slate-300 tracking-[0.2em] uppercase mb-6">Trusted by Leading Financial Institutions</p>
+        <div class="flex items-center justify-center gap-8 opacity-30">
+          <div class="w-16 h-8 bg-slate-300 rounded"></div>
+          <div class="w-20 h-8 bg-slate-200 rounded"></div>
+          <div class="w-14 h-8 bg-slate-300 rounded"></div>
+          <div class="w-18 h-8 bg-slate-200 rounded"></div>
+          <div class="w-16 h-8 bg-slate-300 rounded"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 text-center text-xs text-slate-400">
+      &copy; 2025 Instant Compliance Audit. All rights reserved.
+    </footer>
+  </div>
+
+
+  <!-- ======================== PAGE 2: PROCESSING ======================== -->
+  <div id="page-processing" class="min-h-screen flex-col items-center justify-center px-6 hidden">
+    <div class="max-w-md w-full mx-auto text-center page-transition">
+
+      <!-- Animated Shield -->
+      <div class="mb-8 inline-flex">
+        <div class="w-20 h-20 bg-brand/10 rounded-2xl flex items-center justify-center relative">
+          <svg class="w-10 h-10 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          <div class="absolute -top-1 -right-1 w-4 h-4 bg-brand rounded-full pulse-dot"></div>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-2">Analyzing Your Creative</h2>
+      <p class="text-slate-400 text-sm mb-2" id="processing-filename">campaign_banner.png</p>
+      <p class="text-slate-400 text-sm mb-8">
+        Scanning against <span class="font-semibold text-navy" id="processing-framework">MiCAR</span> regulations
+      </p>
+
+      <!-- Progress Bar -->
+      <div class="w-full bg-slate-100 rounded-full h-2 mb-8 overflow-hidden">
+        <div id="progress-bar" class="h-full bg-brand rounded-full progress-bar-fill"></div>
+      </div>
+
+      <!-- Steps -->
+      <div class="text-left space-y-3 max-w-xs mx-auto" id="processing-steps">
+        <!-- Steps populated by JS -->
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================== PAGE 3: RESULTS ======================== -->
+  <div id="page-results" class="min-h-screen flex-col hidden">
+
+    <!-- Top Bar -->
+    <nav class="w-full border-b border-slate-100 bg-white/80 backdrop-blur-sm sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+          </div>
+          <span class="font-bold text-navy text-sm hidden sm:inline">ComplianceAuditPro</span>
+          <span class="text-slate-300 mx-2 hidden sm:inline">|</span>
+          <span class="text-slate-500 text-sm hidden sm:inline">Audit Report</span>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-warning-bg text-warning text-xs font-semibold rounded-full">
+            <span class="w-1.5 h-1.5 bg-warning rounded-full"></span>
+            Review Required
+          </span>
+          <button onclick="showPage('home')" class="text-sm text-slate-500 hover:text-navy font-medium transition-colors flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            New Audit
+          </button>
+          <button onclick="showLeadCapture()" class="bg-navy hover:bg-navy-light text-white font-semibold py-2 px-3 sm:px-5 rounded-lg shadow-md shadow-navy/20 transition-all hover:shadow-navy/30 hover:-translate-y-0.5 flex items-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            <span class="hidden sm:inline">Download PDF Report</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Disclaimer Banner -->
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-4">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-start gap-2 sm:gap-3">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+        </svg>
+        <div>
+          <p class="text-xs sm:text-sm text-blue-800 font-medium">AI-Assisted Analysis — Not Legal Advice</p>
+          <p class="text-[11px] sm:text-xs text-blue-600 mt-0.5">This report is generated by AI and may contain inaccuracies. Always consult a qualified compliance officer before making regulatory decisions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Split Layout -->
+    <div class="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full page-transition">
+
+      <!-- LEFT: Asset Preview -->
+      <div class="lg:w-1/2 p-4 sm:p-6 lg:p-8 lg:border-r border-slate-100">
+        <div class="sticky top-20">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Asset Preview</p>
+              <p class="text-navy font-semibold text-sm mt-1" id="result-filename">Campaign_Banner_V2.png</p>
+            </div>
+          </div>
+
+          <!-- Preview Area -->
+          <div class="bg-slate-50 rounded-2xl p-4 relative">
+            <div id="preview-container" class="w-full rounded-xl overflow-hidden bg-white shadow-sm relative flex items-center justify-center">
+              <img id="preview-image" class="w-full hidden transition-transform duration-200" style="max-height: 300px; display: none;" alt="Uploaded asset" />
+              <video id="preview-video" class="w-full hidden transition-transform duration-200" style="max-height: 300px;" controls muted></video>
+              <div id="preview-placeholder" class="text-slate-300 text-sm py-20">No preview available</div>
+              <!-- Annotation layer will be positioned exactly over the rendered image by JS -->
+              <div id="annotation-layer" class="absolute pointer-events-none" style="top:0;left:0;width:100%;height:100%;"></div>
+            </div>
+          </div>
+
+          <!-- Asset Info Bar -->
+          <div class="flex items-center gap-4 mt-4 text-xs text-slate-400">
+            <span id="asset-type-badge" class="px-2.5 py-1 bg-slate-100 rounded-md font-medium">PNG</span>
+            <span id="asset-size">—</span>
+            <span id="asset-dimensions">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Findings -->
+      <div class="lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col">
+
+        <!-- Framework Tabs -->
+        <div class="flex items-center gap-1 mb-4 bg-slate-50 rounded-xl p-1 w-fit">
+          <button id="tab-micar" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-navy shadow-sm" onclick="switchTab('micar')">MiCAR</button>
+          <button id="tab-mifid" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-slate-600" onclick="switchTab('mifid')">MiFID II</button>
+        </div>
+
+        <!-- Search -->
+        <div class="relative mb-5">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          <input type="text" placeholder="Search rules..." class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+        </div>
+
+        <!-- Findings List -->
+        <div class="flex-1 space-y-4 findings-scroll overflow-y-auto pr-1" id="findings-list">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Summary Bar -->
+        <div class="mt-6 pt-5 border-t border-slate-100">
+          <div class="flex items-center gap-4 mb-5">
+            <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl flex-1">
+              <span class="text-2xl font-bold text-navy" id="total-count">12</span>
+              <span class="text-xs text-slate-400 leading-tight">Total<br/>Rules</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-violation-bg rounded-xl flex-1">
+              <span class="text-2xl font-bold text-violation" id="violation-count">3</span>
+              <span class="text-xs text-violation/70 leading-tight">Violations<br/>Found</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-warning-bg rounded-xl flex-1">
+              <span class="text-2xl font-bold text-warning" id="warning-count">3</span>
+              <span class="text-xs text-warning/70 leading-tight">Warnings<br/>Flagged</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-passed-bg rounded-xl flex-1">
+              <span class="text-2xl font-bold text-passed" id="passed-count">6</span>
+              <span class="text-xs text-passed/70 leading-tight">Rules<br/>Passed</span>
+            </div>
+          </div>
+
+          <!-- CTA Button -->
+          <button onclick="showLeadCapture()" class="w-full bg-navy hover:bg-navy-light text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-navy/20 transition-all hover:shadow-navy/30 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            Download Full PDF Report
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================== LEAD CAPTURE MODAL ======================== -->
+  <div id="lead-modal" class="fixed inset-0 z-50 items-center justify-center p-4 hidden">
+    <div class="modal-backdrop absolute inset-0 bg-navy/60 backdrop-blur-sm" id="lead-backdrop" onclick="hideLeadCapture()"></div>
+    <div class="modal-content relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto p-8 z-10">
+      <button id="lead-close-btn" onclick="hideLeadCapture()" class="absolute top-4 right-4 w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+        <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-7 h-7 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
+        </div>
+        <h3 id="lead-modal-title" class="text-xl font-bold text-navy">Get Your Full Report</h3>
+        <p id="lead-modal-desc" class="text-slate-400 text-sm mt-1">Enter your details to download the detailed compliance report as PDF.</p>
+      </div>
+
+      <form id="lead-form" onsubmit="handleLeadSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-navy mb-1.5">Full Name</label>
+          <input type="text" required placeholder="Jane Smith" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-navy mb-1.5">Work Email</label>
+          <input type="email" required placeholder="jane@company.com" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-navy mb-1.5">Company</label>
+          <input type="text" required placeholder="Acme Financial" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+        </div>
+        <button type="submit" class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 hover:-translate-y-0.5 text-sm mt-2">
+          Download PDF Report
+        </button>
+        <p class="text-xs text-slate-400 text-center">By submitting you agree to our Privacy Policy. No spam, ever.</p>
+      </form>
+
+      <!-- Success State -->
+      <div id="lead-success" class="hidden text-center py-4">
+        <div class="w-14 h-14 bg-passed-bg rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-7 h-7 text-passed" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-navy">Report Sent!</h3>
+        <p class="text-slate-400 text-sm mt-1">Check your inbox for the full compliance report PDF.</p>
+        <button onclick="hideLeadCapture()" class="mt-5 text-sm text-brand font-semibold hover:text-brand-light transition-colors">Close</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Error Toast Container -->
+  <div id="error-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div class="error-toast bg-violation text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 max-w-md">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+      </svg>
+      <span id="error-toast-message" class="text-sm font-medium">An error occurred</span>
+    </div>
+  </div>
+
+  <!-- ======================== JAVASCRIPT ======================== -->
+  <script>
+    // State
+    let currentFramework = 'micar';
+    let uploadedFile = null;
+    let currentFindings = null; // Stores the API response
+    let analysisController = null; // AbortController for in-flight requests
+
+    // Scan limit
+    const MAX_FREE_SCANS = 3;
+    function getScanCount() {
+      return parseInt(localStorage.getItem('compliance_scan_count') || '0', 10);
+    }
+    function incrementScanCount() {
+      const count = getScanCount() + 1;
+      localStorage.setItem('compliance_scan_count', count.toString());
+      return count;
+    }
+    function hasReachedLimit() {
+      return getScanCount() >= MAX_FREE_SCANS;
+    }
+    function updateScansRemaining() {
+      const remaining = Math.max(0, MAX_FREE_SCANS - getScanCount());
+      const el = document.getElementById('scans-remaining-text');
+      if (el) el.textContent = `${remaining} free scan${remaining !== 1 ? 's' : ''} left`;
+    }
+    // Update on load
+    updateScansRemaining();
+
+    // Select framework
+    function selectFramework(framework) {
+      currentFramework = framework;
+      const segMicar = document.getElementById('seg-micar');
+      const segMifid = document.getElementById('seg-mifid');
+      const scanLabel = document.getElementById('scan-type-label');
+
+      if (framework === 'micar') {
+        segMicar.className = 'px-5 py-2 text-sm font-semibold rounded-full transition-all bg-white text-navy shadow-sm';
+        segMifid.className = 'px-5 py-2 text-sm font-semibold rounded-full transition-all text-slate-400';
+        scanLabel.textContent = 'MiCAR';
+      } else {
+        segMifid.className = 'px-5 py-2 text-sm font-semibold rounded-full transition-all bg-white text-navy shadow-sm';
+        segMicar.className = 'px-5 py-2 text-sm font-semibold rounded-full transition-all text-slate-400';
+        scanLabel.textContent = 'MiFID II';
+      }
+    }
+
+    // Drag and drop
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('upload-zone').classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('upload-zone').classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('upload-zone').classList.remove('drag-over');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) processFile(files[0]);
+    }
+
+    function handleFileSelect(e) {
+      const files = e.target.files;
+      if (files.length > 0) processFile(files[0]);
+    }
+
+    // Show error toast
+    function showError(message) {
+      const toast = document.getElementById('error-toast');
+      document.getElementById('error-toast-message').textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 5000);
+    }
+
+    // Process uploaded file — calls the backend API
+    async function processFile(file) {
+      // Check scan limit
+      if (hasReachedLimit()) {
+        uploadedFile = file;
+        showLeadCapture(true);
+        return;
+      }
+
+      uploadedFile = file;
+      currentFindings = null;
+      showPage('processing');
+
+      document.getElementById('processing-filename').textContent = file.name;
+      document.getElementById('processing-framework').textContent = currentFramework === 'micar' ? 'MiCAR' : 'MiFID II';
+
+      // Animate processing steps
+      const stepsContainer = document.getElementById('processing-steps');
+      stepsContainer.innerHTML = '';
+
+      const steps = [
+        { text: 'Uploading asset securely...', delay: 0 },
+        { text: 'Extracting text & visual elements...', delay: 1200 },
+        { text: 'Checking regulatory requirements...', delay: 3000 },
+        { text: 'Generating compliance report...', delay: 5000 },
+      ];
+
+      const stepTimers = steps.map((step, i) =>
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'check-step flex items-center gap-3';
+          el.innerHTML = `
+            <div class="w-5 h-5 rounded-full ${i < steps.length - 1 ? 'bg-passed/20' : 'bg-brand/20'} flex items-center justify-center flex-shrink-0">
+              <svg class="w-3 h-3 ${i < steps.length - 1 ? 'text-passed' : 'text-brand'}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="${i < steps.length - 1 ? 'M4.5 12.75l6 6 9-13.5' : 'M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'}" />
+              </svg>
+            </div>
+            <span class="text-sm ${i < steps.length - 1 ? 'text-slate-600' : 'text-slate-400'}">${step.text}</span>
+          `;
+          stepsContainer.appendChild(el);
+        }, step.delay)
+      );
+
+      // Call the API
+      try {
+        if (analysisController) analysisController.abort();
+        analysisController = new AbortController();
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('framework', currentFramework);
+
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          body: formData,
+          signal: analysisController.signal,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Analysis failed. Please try again.');
+        }
+
+        currentFindings = data.findings;
+
+        // Complete the progress bar
+        const bar = document.getElementById('progress-bar');
+        bar.className = 'h-full bg-brand rounded-full progress-bar-complete';
+
+        // Short delay to show completion, then show results
+        setTimeout(() => {
+          incrementScanCount();
+          updateScansRemaining();
+          setupResults(file);
+          showPage('results');
+        }, 600);
+
+      } catch (err) {
+        // Clear step timers
+        stepTimers.forEach(t => clearTimeout(t));
+
+        if (err.name === 'AbortError') return; // User navigated away
+
+        console.error('Analysis error:', err);
+        showError(err.message || 'An unexpected error occurred. Please try again.');
+        showPage('home');
+      }
+    }
+
+    // Setup results page
+    function setupResults(file) {
+      document.getElementById('result-filename').textContent = file.name;
+
+      // Preview
+      const previewImage = document.getElementById('preview-image');
+      const previewVideo = document.getElementById('preview-video');
+      const previewPlaceholder = document.getElementById('preview-placeholder');
+      const assetTypeBadge = document.getElementById('asset-type-badge');
+      const assetSize = document.getElementById('asset-size');
+
+      previewImage.classList.add('hidden');
+      previewVideo.classList.add('hidden');
+      previewPlaceholder.classList.add('hidden');
+
+      const ext = file.name.split('.').pop().toUpperCase();
+      assetTypeBadge.textContent = ext;
+      assetSize.textContent = formatFileSize(file.size);
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          previewImage.classList.remove('hidden');
+          previewImage.style.display = 'block';
+          previewImage.onload = () => {
+            const img = previewImage;
+            document.getElementById('asset-dimensions').textContent = `${img.naturalWidth} × ${img.naturalHeight}px`;
+            positionAnnotationLayer();
+          };
+        };
+        reader.readAsDataURL(file);
+      } else if (file.type.startsWith('video/')) {
+        const url = URL.createObjectURL(file);
+        previewVideo.src = url;
+        previewVideo.classList.remove('hidden');
+        document.getElementById('asset-dimensions').textContent = 'Video';
+      } else {
+        previewPlaceholder.classList.remove('hidden');
+        previewPlaceholder.textContent = file.name;
+        document.getElementById('asset-dimensions').textContent = '—';
+      }
+
+      // Show only the analyzed framework tab as active
+      const tabMicar = document.getElementById('tab-micar');
+      const tabMifid = document.getElementById('tab-mifid');
+
+      if (currentFramework === 'micar') {
+        tabMicar.className = 'px-4 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-navy shadow-sm';
+        tabMifid.className = 'px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-300 cursor-not-allowed';
+        tabMifid.onclick = null;
+      } else {
+        tabMifid.className = 'px-4 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-navy shadow-sm';
+        tabMicar.className = 'px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-300 cursor-not-allowed';
+        tabMicar.onclick = null;
+      }
+
+      renderFindings();
+    }
+
+    // Switch regulatory tab (kept for compatibility but now only one tab is active)
+    function switchTab(framework) {
+      // Only render if we have findings for this framework
+      if (currentFindings) {
+        renderFindings();
+      }
+    }
+
+    // Render findings from API response
+    function renderFindings() {
+      if (!currentFindings) return;
+
+      const data = currentFindings;
+      const list = document.getElementById('findings-list');
+      const annotationLayer = document.getElementById('annotation-layer');
+      list.innerHTML = '';
+      annotationLayer.innerHTML = '';
+
+      let markerIndex = 1;
+
+      // Violations
+      (data.violations || []).forEach((f, i) => {
+        const id = `finding-${markerIndex}`;
+        list.appendChild(createFindingCard(f, 'violation', i, id, markerIndex));
+        if (f.location) renderAnnotationMarker(f, 'violation', id, markerIndex);
+        markerIndex++;
+      });
+
+      // Warnings
+      (data.warnings || []).forEach((f, i) => {
+        const id = `finding-${markerIndex}`;
+        list.appendChild(createFindingCard(f, 'warning', i, id, markerIndex));
+        if (f.location) renderAnnotationMarker(f, 'warning', id, markerIndex);
+        markerIndex++;
+      });
+
+      // Passed
+      (data.passed || []).forEach((f, i) => {
+        const id = `finding-${markerIndex}`;
+        list.appendChild(createFindingCard(f, 'passed', i, id, markerIndex));
+        markerIndex++;
+      });
+
+      // Update counts
+      const violations = (data.violations || []).length;
+      const warnings = (data.warnings || []).length;
+      const passed = (data.passed || []).length;
+      document.getElementById('total-count').textContent = violations + warnings + passed;
+      document.getElementById('violation-count').textContent = violations;
+      document.getElementById('warning-count').textContent = warnings;
+      document.getElementById('passed-count').textContent = passed;
+
+      // Update status badge based on findings
+      const statusBadge = document.querySelector('nav .inline-flex.items-center');
+      if (statusBadge) {
+        if (violations > 0) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 bg-violation-bg text-violation text-xs font-semibold rounded-full';
+          statusBadge.innerHTML = '<span class="w-1.5 h-1.5 bg-violation rounded-full"></span>Action Required';
+        } else if (warnings > 0) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 bg-warning-bg text-warning text-xs font-semibold rounded-full';
+          statusBadge.innerHTML = '<span class="w-1.5 h-1.5 bg-warning rounded-full"></span>Review Required';
+        } else {
+          statusBadge.className = 'inline-flex items-center gap-1.5 px-3 py-1 bg-passed-bg text-passed text-xs font-semibold rounded-full';
+          statusBadge.innerHTML = '<span class="w-1.5 h-1.5 bg-passed rounded-full"></span>Compliant';
+        }
+      }
+
+      // Reposition annotation layer to match rendered image
+      positionAnnotationLayer();
+    }
+
+    // Render annotation marker on image
+    function renderAnnotationMarker(finding, type, findingId, number) {
+      const layer = document.getElementById('annotation-layer');
+      const colors = {
+        violation: { bg: '#DC2626', ring: 'rgba(220,38,38,0.3)', label: 'VIOLATION', labelBg: '#FEF2F2', labelText: '#DC2626' },
+        warning: { bg: '#F59E0B', ring: 'rgba(245,158,11,0.3)', label: 'WARNING', labelBg: '#FFFBEB', labelText: '#D97706' },
+      };
+      const c = colors[type];
+
+      const marker = document.createElement('div');
+      marker.className = 'annotation-marker absolute pointer-events-auto';
+      marker.id = `marker-${findingId}`;
+      marker.style.cssText = `left: ${finding.location.x}%; top: ${finding.location.y}%; transform: translate(-50%, -50%); z-index: 10;`;
+      marker.onclick = () => highlightFinding(findingId);
+
+      // Determine tooltip position: if marker is in top half, show below; otherwise above
+      // If marker is on the right side, align tooltip to the right
+      const tooltipY = finding.location.y < 50 ? 'top: calc(100% + 10px);' : 'bottom: calc(100% + 10px);';
+      const tooltipX = finding.location.x > 65 ? 'right: -10px;' : finding.location.x < 35 ? 'left: -10px;' : 'left: 50%; transform: translateX(-50%);';
+
+      marker.innerHTML = `
+        <div class="relative">
+          <div class="marker-pulse absolute inset-0 rounded-full" style="background: ${c.ring};"></div>
+          <div class="relative w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold shadow-lg" style="background: ${c.bg}; opacity: 0.7;">
+            ${number}
+          </div>
+          <div class="marker-tooltip absolute z-30" style="${tooltipY} ${tooltipX} width: 260px;">
+            <div class="bg-white rounded-xl shadow-xl border border-slate-200 p-3" style="pointer-events: none;">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="inline-block px-1.5 py-0.5 text-[9px] font-bold rounded" style="background: ${c.labelBg}; color: ${c.labelText};">${c.label}</span>
+                <span class="text-[10px] text-slate-400 font-mono">${finding.regulation}</span>
+              </div>
+              <h5 class="text-xs font-semibold text-navy mb-1">${finding.title}</h5>
+              <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-3">${finding.description}</p>
+              <div class="flex items-center gap-1 mt-1.5">
+                <svg class="w-3 h-3 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+                <span class="text-[10px] text-slate-400">${finding.location.label}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      layer.appendChild(marker);
+    }
+
+    // Highlight finding card and its marker
+    let activeHighlight = null;
+    function highlightFinding(findingId) {
+      if (activeHighlight) {
+        const prevCard = document.getElementById(activeHighlight);
+        const prevMarker = document.getElementById(`marker-${activeHighlight}`);
+        if (prevCard) prevCard.classList.remove('active-highlight');
+        if (prevMarker) prevMarker.classList.remove('active');
+      }
+
+      if (activeHighlight === findingId) {
+        activeHighlight = null;
+        return;
+      }
+
+      activeHighlight = findingId;
+
+      const card = document.getElementById(findingId);
+      if (card) {
+        card.classList.add('active-highlight');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      const marker = document.getElementById(`marker-${findingId}`);
+      if (marker) {
+        marker.classList.add('active');
+        const tooltip = marker.querySelector('[class*="whitespace-nowrap"]');
+        if (tooltip) {
+          tooltip.style.opacity = '1';
+          setTimeout(() => { if (activeHighlight === findingId) tooltip.style.opacity = ''; }, 2500);
+        }
+      }
+    }
+
+    function createFindingCard(finding, type, index, id, number) {
+      const colors = {
+        violation: { badge: 'bg-violation text-white', border: 'border-l-violation', bg: 'hover:bg-violation-bg/50', label: 'VIOLATION', dot: '#DC2626' },
+        warning: { badge: 'bg-warning text-white', border: 'border-l-warning', bg: 'hover:bg-warning-bg/50', label: 'WARNING', dot: '#F59E0B' },
+        passed: { badge: 'bg-passed text-white', border: 'border-l-passed', bg: 'hover:bg-passed-bg/50', label: 'PASSED', dot: '#10B981' },
+      };
+      const c = colors[type];
+      const hasLocation = finding.location && type !== 'passed';
+
+      const card = document.createElement('div');
+      card.className = `finding-card border border-slate-100 rounded-xl p-4 border-l-4 ${c.border} ${c.bg} cursor-pointer`;
+      card.id = id;
+      card.style.animationDelay = `${index * 0.05}s`;
+      if (hasLocation) {
+        card.onclick = () => highlightFinding(id);
+      }
+
+      card.innerHTML = `
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex items-center gap-2">
+            ${hasLocation ? `<span class="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-bold flex-shrink-0" style="background:${c.dot}">${number}</span>` : ''}
+            <span class="inline-block px-2 py-0.5 text-[10px] font-bold rounded-md ${c.badge} tracking-wider">${c.label}</span>
+          </div>
+          <span class="text-[11px] text-slate-400 font-mono">${finding.regulation}</span>
+        </div>
+        <h4 class="text-sm font-semibold text-navy mb-1">${finding.title}</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">${finding.description}</p>
+        ${hasLocation ? `
+        <div class="flex items-center gap-1.5 mt-2 px-2 py-1 bg-slate-50 rounded-lg w-fit">
+          <svg class="w-3 h-3 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+          </svg>
+          <span class="text-[11px] text-slate-500">${finding.location.label}</span>
+        </div>
+        ` : ''}
+        ${type !== 'passed' ? `
+        <div class="flex items-center gap-3 mt-3">
+          <button class="text-xs text-brand font-medium hover:text-brand-light transition-colors flex items-center gap-1" onclick="event.stopPropagation()">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Add Note
+          </button>
+          <button class="text-xs text-slate-400 font-medium hover:text-slate-600 transition-colors flex items-center gap-1" onclick="event.stopPropagation()">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+            View Regulation
+          </button>
+        </div>
+        ` : ''}
+      `;
+
+      return card;
+    }
+
+    // Page navigation
+    function showPage(page) {
+      const pages = ['page-home', 'page-processing', 'page-results'];
+      pages.forEach(p => {
+        const el = document.getElementById(p);
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      });
+
+      const target = document.getElementById('page-' + page);
+      target.classList.remove('hidden');
+      target.classList.add('flex');
+
+      // Set indeterminate progress bar on processing page
+      if (page === 'processing') {
+        const bar = document.getElementById('progress-bar');
+        bar.className = 'h-full bg-brand rounded-full progress-bar-indeterminate';
+      }
+
+      // Reset file input when going back to home
+      if (page === 'home') {
+        document.getElementById('file-input').value = '';
+        if (analysisController) {
+          analysisController.abort();
+          analysisController = null;
+        }
+      }
+    }
+
+    // Lead capture
+    function showLeadCapture(fromLimit = false) {
+      const modal = document.getElementById('lead-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('lead-form').classList.remove('hidden');
+      document.getElementById('lead-success').classList.add('hidden');
+
+      const modalTitle = document.getElementById('lead-modal-title');
+      const modalDesc = document.getElementById('lead-modal-desc');
+      const closeBtn = document.getElementById('lead-close-btn');
+
+      if (fromLimit) {
+        modalTitle.textContent = 'You\u2019ve used your 3 free scans';
+        modalDesc.textContent = 'Enter your details to unlock more compliance audits and download your reports.';
+        closeBtn.classList.add('hidden');
+        document.getElementById('lead-backdrop').onclick = null;
+      } else {
+        modalTitle.textContent = 'Get Your Full Report';
+        modalDesc.textContent = 'Enter your details to download the detailed compliance report as PDF.';
+        closeBtn.classList.remove('hidden');
+        document.getElementById('lead-backdrop').onclick = hideLeadCapture;
+      }
+    }
+
+    function hideLeadCapture() {
+      const modal = document.getElementById('lead-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    async function handleLeadSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const inputs = form.querySelectorAll('input');
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      const name = inputs[0].value.trim();
+      const email = inputs[1].value.trim();
+      const company = inputs[2].value.trim();
+
+      // Disable button while submitting
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        const response = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, company }),
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to submit');
+        }
+
+        document.getElementById('lead-form').classList.add('hidden');
+        document.getElementById('lead-success').classList.remove('hidden');
+      } catch (err) {
+        showError(err.message || 'Failed to submit. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Download PDF Report';
+      }
+    }
+
+    // Utilities
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    // Position annotation layer exactly over the rendered image
+    function positionAnnotationLayer() {
+      const img = document.getElementById('preview-image');
+      const layer = document.getElementById('annotation-layer');
+      const container = document.getElementById('preview-container');
+
+      if (!img || img.classList.contains('hidden') || !img.naturalWidth) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const imgRect = img.getBoundingClientRect();
+
+      // Calculate the image's position relative to the container
+      const offsetLeft = imgRect.left - containerRect.left;
+      const offsetTop = imgRect.top - containerRect.top;
+
+      layer.style.left = offsetLeft + 'px';
+      layer.style.top = offsetTop + 'px';
+      layer.style.width = imgRect.width + 'px';
+      layer.style.height = imgRect.height + 'px';
+    }
+
+    // Reposition on window resize
+    window.addEventListener('resize', () => {
+      positionAnnotationLayer();
+    });
+  </script>
+
+</body>
+</html>
