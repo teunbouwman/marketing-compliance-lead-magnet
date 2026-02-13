@@ -8,9 +8,24 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || '0.0.0.0';
 
 // Parse JSON bodies for the lead endpoint
 app.use(express.json());
+
+// Basic CORS support for API routes so the frontend can call the backend even
+// when served from a different local origin during preview.
+app.use('/api', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  return next();
+});
 
 // Multer: memory storage, 50MB limit
 const upload = multer({
@@ -106,6 +121,17 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
     if (!findings.warnings) findings.warnings = [];
     if (!findings.passed) findings.passed = [];
 
+    // Check if the image was classified as a financial promotion
+    if (findings.is_financial_promotion === false) {
+      return res.json({
+        success: true,
+        findings,
+        framework,
+        not_financial_promotion: true,
+        rejection_reason: findings.rejection_reason || 'This image does not appear to be a financial promotion.',
+      });
+    }
+
     // Clamp coordinates to 0-100
     [...findings.violations, ...findings.warnings].forEach(f => {
       if (f.location) {
@@ -145,6 +171,42 @@ if (smtpConfigured) {
   });
 }
 
+// Slack webhook helper
+async function sendSlackNotification(lead) {
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  const payload = {
+    blocks: [
+      {
+        type: 'header',
+        text: { type: 'plain_text', text: '🔔 New Compliance Audit Lead', emoji: true },
+      },
+      {
+        type: 'section',
+        fields: [
+          { type: 'mrkdwn', text: `*Name:*\n${lead.name}` },
+          { type: 'mrkdwn', text: `*Company:*\n${lead.company}` },
+          { type: 'mrkdwn', text: `*Email:*\n<mailto:${lead.email}|${lead.email}>` },
+          { type: 'mrkdwn', text: `*Time:*\n${new Date(lead.timestamp).toLocaleString('en-GB', { timeZone: 'Europe/Amsterdam' })}` },
+        ],
+      },
+      { type: 'divider' },
+    ],
+  };
+
+  try {
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) console.error('Slack webhook error:', res.status, await res.text());
+  } catch (err) {
+    console.error('Slack webhook failed:', err.message);
+  }
+}
+
 // Lead capture endpoint
 app.post('/api/lead', async (req, res) => {
   try {
@@ -172,7 +234,10 @@ app.post('/api/lead', async (req, res) => {
     leads.push(lead);
     fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2));
 
-    // 2. Send email notification if SMTP is configured
+    // 2. Send Slack notification
+    await sendSlackNotification(lead);
+
+    // 3. Send email notification if SMTP is configured (fallback)
     if (transporter) {
       await transporter.sendMail({
         from: `"Compliance Audit" <${process.env.SMTP_USER}>`,
@@ -211,6 +276,6 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
-  console.log(`Compliance Audit server running at http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Compliance Audit server running at http://${HOST}:${PORT}`);
 });

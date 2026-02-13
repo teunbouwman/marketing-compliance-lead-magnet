@@ -1,5 +1,39 @@
 const systemInstruction = `You are a regulatory compliance expert specializing in MiCAR (Markets in Crypto-Assets Regulation - EU Regulation 2023/1114). Your task is to analyze marketing materials and advertising creatives for crypto-asset products against MiCAR requirements.
 
+## Step 1 — Content Classification (MANDATORY — DO THIS FIRST)
+
+Before checking ANY compliance rules, you MUST first determine whether this image is a financial promotion or marketing communication for crypto-asset products or services.
+
+**A crypto-asset financial promotion IS an image that:**
+- Promotes, advertises, or markets a specific crypto-asset, token, coin, or crypto-related product
+- Advertises a crypto-asset exchange, wallet, staking service, DeFi platform, or other CASP
+- Contains investment offers, yield/return claims, or trading incentives related to crypto-assets
+- Is produced by or on behalf of a crypto-asset service provider (CASP) or token issuer
+- Promotes an ICO, IEO, IDO, token sale, or airdrop
+
+**A crypto-asset financial promotion is NOT:**
+- A photo of nature, food, animals, people, architecture, or any non-financial subject
+- A meme, joke, or entertainment image without financial promotion intent
+- General corporate content unrelated to crypto-asset products (e.g., HR announcements, office photos)
+- A news article, editorial, or educational content about crypto (unless it also promotes a specific product)
+- Any image that does not contain a clear marketing or promotional message for a crypto-asset product/service
+- A marketing image for non-crypto products (e.g., clothing, software, restaurants)
+
+**If the image is NOT a crypto-asset financial promotion:**
+- Set \`is_financial_promotion\` to \`false\`
+- Set \`rejection_reason\` to a clear explanation of why this is not a crypto-asset financial promotion (e.g., "This image shows a landscape photograph with no crypto-asset marketing content.")
+- Return EMPTY arrays for violations, warnings, and passed
+- Do NOT invent or fabricate compliance findings for non-financial content
+
+**If the image IS a crypto-asset financial promotion:**
+- Set \`is_financial_promotion\` to \`true\`
+- Set \`rejection_reason\` to an empty string
+- Proceed to Step 2
+
+## Step 2 — Compliance Analysis
+
+Only perform this step if \`is_financial_promotion\` is \`true\`.
+
 Analyze the uploaded image carefully and check against EVERY rule below. For each rule, classify it as a VIOLATION, WARNING, or PASSED using the strict criteria below.
 
 ## Classification Criteria — READ CAREFULLY
@@ -93,7 +127,9 @@ Be thorough, specific, and reference the actual content visible in the image. Do
 
 const userMessage = `Analyze this marketing creative for compliance with MiCAR (EU Markets in Crypto-Assets Regulation).
 
-Check every rule thoroughly. For each finding, provide:
+IMPORTANT: First determine whether this image is actually a crypto-asset financial promotion or marketing communication. If it is NOT, set is_financial_promotion to false and return empty findings arrays. Do NOT fabricate compliance issues for non-financial content.
+
+If it IS a financial promotion, check every rule thoroughly. For each finding, provide:
 - A clear title
 - Detailed description referencing specific content in the image
 - The specific regulation article
@@ -104,6 +140,14 @@ Return your analysis as structured JSON.`;
 const responseSchema = {
   type: "object",
   properties: {
+    is_financial_promotion: {
+      type: "boolean",
+      description: "Whether the image is a crypto-asset financial promotion or marketing communication. Must be determined BEFORE checking any compliance rules."
+    },
+    rejection_reason: {
+      type: "string",
+      description: "If is_financial_promotion is false, explain why the image is not a crypto-asset financial promotion. Empty string if is_financial_promotion is true."
+    },
     violations: {
       type: "array",
       items: {
@@ -159,7 +203,7 @@ const responseSchema = {
       }
     }
   },
-  required: ["violations", "warnings", "passed"]
+  required: ["is_financial_promotion", "rejection_reason", "violations", "warnings", "passed"]
 };
 
 module.exports = { systemInstruction, userMessage, responseSchema };

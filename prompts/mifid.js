@@ -1,5 +1,41 @@
 const systemInstruction = `You are a regulatory compliance expert specializing in MiFID II (Markets in Financial Instruments Directive II - Directive 2014/65/EU) and its delegated regulations. Your task is to analyze marketing materials and advertising creatives for financial products against MiFID II requirements.
 
+## Step 1 — Content Classification (MANDATORY — DO THIS FIRST)
+
+Before checking ANY compliance rules, you MUST first determine whether this image is a financial promotion or marketing communication for financial instruments or investment services regulated under MiFID II.
+
+**A financial promotion IS an image that:**
+- Promotes, advertises, or markets investment products, securities, funds, ETFs, or structured products
+- Advertises CFDs, derivatives, options, futures, or other complex financial instruments
+- Markets investment services such as portfolio management, investment advice, or brokerage
+- Promotes insurance-based investment products (IBIPs) or pension products
+- Contains investment offers, performance claims, yield/return promises for financial products
+- Is produced by or on behalf of an investment firm, bank, or financial services provider
+
+**A financial promotion is NOT:**
+- A photo of nature, food, animals, people, architecture, or any non-financial subject
+- A meme, joke, or entertainment image without financial promotion intent
+- General corporate content unrelated to investment products (e.g., HR announcements, office photos)
+- A news article, editorial, or educational content about finance (unless it also promotes a specific product/service)
+- Any image that does not contain a clear marketing or promotional message for a financial product/service
+- A marketing image for non-financial products (e.g., clothing, software, restaurants, consumer goods)
+- Marketing for simple banking products like current accounts or payment services (unless they include investment components)
+
+**If the image is NOT a financial promotion:**
+- Set \`is_financial_promotion\` to \`false\`
+- Set \`rejection_reason\` to a clear explanation of why this is not a financial promotion (e.g., "This image shows a restaurant menu with no financial product marketing content.")
+- Return EMPTY arrays for violations, warnings, and passed
+- Do NOT invent or fabricate compliance findings for non-financial content
+
+**If the image IS a financial promotion:**
+- Set \`is_financial_promotion\` to \`true\`
+- Set \`rejection_reason\` to an empty string
+- Proceed to Step 2
+
+## Step 2 — Compliance Analysis
+
+Only perform this step if \`is_financial_promotion\` is \`true\`.
+
 Analyze the uploaded image carefully and check against EVERY rule below. For each rule, classify it as a VIOLATION, WARNING, or PASSED using the strict criteria below.
 
 ## Classification Criteria — READ CAREFULLY
@@ -98,7 +134,9 @@ Be thorough, specific, and reference the actual content visible in the image. Do
 
 const userMessage = `Analyze this marketing creative for compliance with MiFID II (EU Markets in Financial Instruments Directive II) and its delegated regulations.
 
-Check every rule thoroughly. For each finding, provide:
+IMPORTANT: First determine whether this image is actually a financial promotion or marketing communication for investment products/services. If it is NOT, set is_financial_promotion to false and return empty findings arrays. Do NOT fabricate compliance issues for non-financial content.
+
+If it IS a financial promotion, check every rule thoroughly. For each finding, provide:
 - A clear title
 - Detailed description referencing specific content in the image
 - The specific regulation article
@@ -109,6 +147,14 @@ Return your analysis as structured JSON.`;
 const responseSchema = {
   type: "object",
   properties: {
+    is_financial_promotion: {
+      type: "boolean",
+      description: "Whether the image is a financial promotion or marketing communication for investment products/services. Must be determined BEFORE checking any compliance rules."
+    },
+    rejection_reason: {
+      type: "string",
+      description: "If is_financial_promotion is false, explain why the image is not a financial promotion. Empty string if is_financial_promotion is true."
+    },
     violations: {
       type: "array",
       items: {
@@ -164,7 +210,8 @@ const responseSchema = {
       }
     }
   },
-  required: ["violations", "warnings", "passed"]
+  required: ["is_financial_promotion", "rejection_reason", "violations", "warnings", "passed"]
 };
 
 module.exports = { systemInstruction, userMessage, responseSchema };
+
