@@ -520,6 +520,10 @@
           <label class="block text-sm font-medium text-navy mb-1.5">Company</label>
           <input type="text" required placeholder="Acme Financial" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
         </div>
+        <div>
+          <label class="block text-sm font-medium text-navy mb-1.5">Phone Number <span class="text-slate-400 font-normal">(Optional)</span></label>
+          <input type="tel" placeholder="+31 6 12345678" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+        </div>
         <button type="submit" class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 hover:-translate-y-0.5 text-sm mt-2">
           Download PDF Report
         </button>
@@ -1062,6 +1066,7 @@
       const name = inputs[0].value.trim();
       const email = inputs[1].value.trim();
       const company = inputs[2].value.trim();
+      const phone = inputs[3].value.trim();
 
       // Disable button while submitting
       submitBtn.disabled = true;
@@ -1071,7 +1076,7 @@
         const response = await fetch('/api/lead', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, company }),
+          body: JSON.stringify({ name, email, company, phone }),
         });
 
         const data = await response.json();

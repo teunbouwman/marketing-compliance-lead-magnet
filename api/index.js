@@ -165,19 +165,34 @@ if (smtpConfigured) {
   });
 }
 
+// Supabase (optional)
+let supabase = null;
+if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
+  try {
+    const { createClient } = require('@supabase/supabase-js');
+    supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+    console.log('✅ Supabase client initialised');
+  } catch (err) {
+    console.error('⚠️ Supabase init failed:', err.message);
+  }
+} else {
+  console.log('ℹ️  No SUPABASE_URL / SUPABASE_KEY – Supabase disabled');
+}
+
 // Lead capture endpoint
 app.post('/api/lead', async (req, res) => {
   try {
-    const { name, email, company } = req.body;
+    const { name, email, company, phone } = req.body;
 
     if (!name || !email || !company) {
-      return res.status(400).json({ success: false, error: 'All fields are required.' });
+      return res.status(400).json({ success: false, error: 'Name, email, and company are required.' });
     }
 
     const lead = {
       name,
       email,
       company,
+      phone: phone || '',
       timestamp: new Date().toISOString(),
     };
 
@@ -192,7 +207,20 @@ app.post('/api/lead', async (req, res) => {
     leads.push(lead);
     fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2));
 
-    // 2. Send email notification if SMTP is configured
+    // 2. Supabase (primary storage)
+    if (supabase) {
+      try {
+        const { error: sbError } = await supabase
+          .from('leads')
+          .insert({ name, email, company, phone: lead.phone, created_at: lead.timestamp });
+        if (sbError) console.error('⚠️ Supabase insert error:', sbError.message);
+        else console.log('✅ Lead saved to Supabase');
+      } catch (sbErr) {
+        console.error('⚠️ Supabase error:', sbErr.message);
+      }
+    }
+
+    // 3. Send email notification if SMTP is configured
     if (transporter) {
       await transporter.sendMail({
         from: `"Compliance Audit" <${process.env.SMTP_USER}>`,
@@ -204,6 +232,7 @@ app.post('/api/lead', async (req, res) => {
             <tr><td style="padding:8px 16px;font-weight:bold;color:#002B5B;">Name</td><td style="padding:8px 16px;">${name}</td></tr>
             <tr><td style="padding:8px 16px;font-weight:bold;color:#002B5B;">Email</td><td style="padding:8px 16px;"><a href="mailto:${email}">${email}</a></td></tr>
             <tr><td style="padding:8px 16px;font-weight:bold;color:#002B5B;">Company</td><td style="padding:8px 16px;">${company}</td></tr>
+            <tr><td style="padding:8px 16px;font-weight:bold;color:#002B5B;">Phone</td><td style="padding:8px 16px;">${lead.phone || 'N/A'}</td></tr>
             <tr><td style="padding:8px 16px;font-weight:bold;color:#002B5B;">Time</td><td style="padding:8px 16px;">${lead.timestamp}</td></tr>
           </table>
         `,
