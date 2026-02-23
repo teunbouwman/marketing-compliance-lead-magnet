@@ -196,17 +196,8 @@ app.post('/api/lead', async (req, res) => {
       timestamp: new Date().toISOString(),
     };
 
-    // 1. Always store locally as backup
-    const leadsFile = path.join(__dirname, 'leads.json');
-    let leads = [];
-    try {
-      if (fs.existsSync(leadsFile)) {
-        leads = JSON.parse(fs.readFileSync(leadsFile, 'utf8'));
-      }
-    } catch (e) { /* start fresh */ }
-    leads.push(lead);
-    fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2));
-
+    // Note: Local leads.json backup was removed because Vercel has a read-only filesystem.
+    // Leads are now stored strictly in Supabase.
     // 2. Supabase (primary storage)
     if (supabase) {
       try {
