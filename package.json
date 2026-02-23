@@ -2,15 +2,16 @@
   "name": "compliance-audit",
   "version": "1.0.0",
   "description": "AI-powered marketing compliance audit tool",
-  "main": "server.js",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node api/index.js",
+    "dev": "node --watch api/index.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "micro": "^10.0.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^8.0.1",
     "openai": "^6.21.0"

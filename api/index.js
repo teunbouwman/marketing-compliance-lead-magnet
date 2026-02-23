@@ -26,8 +26,8 @@ const upload = multer({
   },
 });
 
-// Serve index.html as static
-app.use(express.static(path.join(__dirname)));
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '../public')));
 
 // LiteLLM client (OpenAI-compatible)
 const client = new OpenAI({
@@ -222,6 +222,10 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
-  console.log(`Compliance Audit server running at http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Compliance Audit server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
