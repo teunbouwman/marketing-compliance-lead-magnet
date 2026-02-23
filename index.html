@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,25 +33,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    * {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    }
+    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
     .upload-zone {
-      background: linear-gradient(135deg, rgba(59, 91, 219, 0.02) 0%, rgba(59, 91, 219, 0.06) 100%);
+      background: linear-gradient(135deg, rgba(59,91,219,0.02) 0%, rgba(59,91,219,0.06) 100%);
       border: 2px dashed #CBD5E1;
       transition: all 0.3s ease;
     }
-
     .upload-zone:hover,
     .upload-zone.drag-over {
       border-color: #3B5BDB;
-      background: linear-gradient(135deg, rgba(59, 91, 219, 0.04) 0%, rgba(59, 91, 219, 0.10) 100%);
+      background: linear-gradient(135deg, rgba(59,91,219,0.04) 0%, rgba(59,91,219,0.10) 100%);
       transform: scale(1.005);
     }
-
     .upload-zone.drag-over {
-      box-shadow: 0 0 0 4px rgba(59, 91, 219, 0.15);
+      box-shadow: 0 0 0 4px rgba(59,91,219,0.15);
     }
 
     .toggle-slider {
@@ -62,66 +57,31 @@
     .page-transition {
       animation: fadeIn 0.4s ease-out;
     }
-
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .progress-bar-fill {
       animation: progressFill 3s ease-in-out forwards;
     }
-
     @keyframes progressFill {
-      0% {
-        width: 0%;
-      }
-
-      15% {
-        width: 12%;
-      }
-
-      40% {
-        width: 45%;
-      }
-
-      60% {
-        width: 62%;
-      }
-
-      80% {
-        width: 85%;
-      }
-
-      100% {
-        width: 100%;
-      }
+      0% { width: 0%; }
+      15% { width: 12%; }
+      40% { width: 45%; }
+      60% { width: 62%; }
+      80% { width: 85%; }
+      100% { width: 100%; }
     }
 
     .progress-bar-indeterminate {
       width: 40%;
       animation: indeterminate 1.5s ease-in-out infinite;
     }
-
     @keyframes indeterminate {
-      0% {
-        margin-left: 0%;
-      }
-
-      50% {
-        margin-left: 60%;
-      }
-
-      100% {
-        margin-left: 0%;
-      }
+      0% { margin-left: 0%; }
+      50% { margin-left: 60%; }
+      100% { margin-left: 0%; }
     }
 
     .progress-bar-complete {
@@ -132,42 +92,24 @@
     .error-toast {
       animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 4.7s forwards;
     }
-
     @keyframes toastIn {
-      from {
-        opacity: 0;
-        transform: translateY(-12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes toastOut {
-      from {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      to {
-        opacity: 0;
-        transform: translateY(-12px);
-      }
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-12px); }
     }
 
     .finding-card {
       transition: all 0.2s ease;
     }
-
     .finding-card:hover {
       transform: translateX(3px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-
     .finding-card.active-highlight {
-      box-shadow: 0 0 0 2px #3B5BDB, 0 4px 16px rgba(59, 91, 219, 0.15);
+      box-shadow: 0 0 0 2px #3B5BDB, 0 4px 16px rgba(59,91,219,0.15);
       transform: translateX(3px);
     }
 
@@ -175,33 +117,21 @@
       transition: all 0.25s ease;
       cursor: pointer;
     }
-
     .annotation-marker:hover {
       transform: translate(-50%, -50%) scale(1.2);
       z-index: 20 !important;
     }
-
     .annotation-marker.active {
       transform: translate(-50%, -50%) scale(1.3);
       z-index: 20 !important;
     }
-
     .annotation-marker .marker-pulse {
       animation: markerPulse 1.5s ease-out infinite;
     }
-
     @keyframes markerPulse {
-      0% {
-        transform: scale(1);
-        opacity: 0.6;
-      }
-
-      100% {
-        transform: scale(2.5);
-        opacity: 0;
-      }
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(2.5); opacity: 0; }
     }
-
     .annotation-line {
       pointer-events: none;
     }
@@ -212,7 +142,6 @@
       transition: opacity 0.2s ease, visibility 0.2s ease;
       pointer-events: none;
     }
-
     .annotation-marker:hover .marker-tooltip,
     .annotation-marker.active .marker-tooltip {
       opacity: 1;
@@ -222,114 +151,59 @@
     .modal-backdrop {
       animation: backdropIn 0.25s ease-out;
     }
-
     @keyframes backdropIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
-
     .modal-content {
       animation: modalIn 0.3s ease-out;
     }
-
     @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95) translateY(10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .shimmer {
-      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
     }
-
     @keyframes shimmer {
-      0% {
-        background-position: 200% 0;
-      }
-
-      100% {
-        background-position: -200% 0;
-      }
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     .pulse-dot {
       animation: pulseDot 2s ease-in-out infinite;
     }
-
     @keyframes pulseDot {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 0.5;
-        transform: scale(1.3);
-      }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
     }
 
     .check-step {
       animation: checkIn 0.4s ease-out forwards;
       opacity: 0;
     }
-
     @keyframes checkIn {
-      from {
-        opacity: 0;
-        transform: translateX(-8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     /* Custom scrollbar for findings */
-    .findings-scroll::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    .findings-scroll::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 10px;
-    }
-
-    .findings-scroll::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 10px;
-    }
-
-    .findings-scroll::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
+    .findings-scroll::-webkit-scrollbar { width: 5px; }
+    .findings-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+    .findings-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .findings-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
     /* Responsive image height */
     @media (min-width: 1024px) {
-
-      #preview-image,
-      #preview-video {
+      #preview-image, #preview-video {
         max-height: 520px !important;
       }
     }
   </style>
 </head>
-
 <body class="bg-white min-h-screen">
 
   <!-- ======================== PAGE 1: HOME ======================== -->
@@ -341,8 +215,7 @@
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 bg-brand rounded-xl flex items-center justify-center shadow-md shadow-brand/25">
             <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
           </div>
           <span class="text-navy font-bold text-lg tracking-tight">Instant Compliance Audit</span>
@@ -355,7 +228,7 @@
       <div class="max-w-2xl w-full text-center">
 
         <h1 class="text-4xl md:text-5xl font-extrabold text-navy leading-tight tracking-tight mt-6 mb-6">
-          Is Your Marketing<br />Compliant?
+          Is Your Marketing<br/>Compliant?
         </h1>
         <p class="text-slate-500 text-lg mb-12 max-w-md mx-auto">
           AI-powered regulatory scanning for modern financial institutions.
@@ -364,24 +237,25 @@
         <!-- Toggle: MiCAR vs MiFID II -->
         <div class="flex items-center justify-center mb-8">
           <div class="inline-flex items-center bg-slate-100 rounded-full p-1 gap-1">
-            <button id="seg-micar" onclick="selectFramework('micar')"
-              class="px-5 py-2 text-sm font-semibold rounded-full transition-all bg-white text-navy shadow-sm">MiCAR</button>
-            <button id="seg-mifid" onclick="selectFramework('mifid')"
-              class="px-5 py-2 text-sm font-semibold rounded-full transition-all text-slate-400">MiFID II</button>
+            <button id="seg-micar" onclick="selectFramework('micar')" class="px-5 py-2 text-sm font-semibold rounded-full transition-all bg-white text-navy shadow-sm">MiCAR</button>
+            <button id="seg-mifid" onclick="selectFramework('mifid')" class="px-5 py-2 text-sm font-semibold rounded-full transition-all text-slate-400">MiFID II</button>
           </div>
         </div>
 
         <!-- Upload Zone -->
-        <div id="upload-zone" class="upload-zone rounded-2xl p-12 md:p-16 cursor-pointer relative max-w-xl mx-auto"
-          onclick="document.getElementById('file-input').click()" ondragover="handleDragOver(event)"
-          ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-          <input type="file" id="file-input" class="hidden" accept="image/*,video/mp4,.pdf"
-            onchange="handleFileSelect(event)" />
+        <div
+          id="upload-zone"
+          class="upload-zone rounded-2xl p-12 md:p-16 cursor-pointer relative max-w-xl mx-auto"
+          onclick="document.getElementById('file-input').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)"
+        >
+          <input type="file" id="file-input" class="hidden" accept="image/*,video/mp4,.pdf" onchange="handleFileSelect(event)" />
 
           <div class="flex flex-col items-center gap-4">
             <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
-              <svg class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                stroke-width="1.5">
+              <svg class="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
             </div>
@@ -391,9 +265,7 @@
                 To run a free <span class="font-semibold text-navy" id="scan-type-label">MiCAR</span> scan
               </p>
             </div>
-            <button
-              class="mt-2 bg-brand hover:bg-brand-light text-white font-semibold px-7 py-2.5 rounded-full shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 hover:-translate-y-0.5 text-sm"
-              onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+            <button class="mt-2 bg-brand hover:bg-brand-light text-white font-semibold px-7 py-2.5 rounded-full shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 hover:-translate-y-0.5 text-sm" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
               Browse Files
             </button>
             <p class="text-slate-400 text-xs mt-1">Supports PDF, JPG, PNG, or MP4 (Max 50MB)</p>
@@ -404,22 +276,19 @@
         <div class="flex items-center justify-center gap-8 mt-8 text-sm text-slate-400">
           <div class="flex items-center gap-2">
             <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
             Bank-grade Encryption
           </div>
           <div class="flex items-center gap-2">
             <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
             </svg>
             Results in &lt; 60s
           </div>
           <div id="scans-remaining" class="flex items-center gap-2">
             <svg class="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span id="scans-remaining-text"></span>
           </div>
@@ -428,8 +297,7 @@
 
       <!-- Trusted By -->
       <div class="mt-16 mb-10 text-center">
-        <p class="text-xs font-semibold text-slate-300 tracking-[0.2em] uppercase mb-6">Trusted by Leading Financial
-          Institutions</p>
+        <p class="text-xs font-semibold text-slate-300 tracking-[0.2em] uppercase mb-6">Trusted by Leading Financial Institutions</p>
         <div class="flex items-center justify-center gap-8 opacity-30">
           <div class="w-16 h-8 bg-slate-300 rounded"></div>
           <div class="w-20 h-8 bg-slate-200 rounded"></div>
@@ -455,8 +323,7 @@
       <div class="mb-8 inline-flex">
         <div class="w-20 h-20 bg-brand/10 rounded-2xl flex items-center justify-center relative">
           <svg class="w-10 h-10 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
           <div class="absolute -top-1 -right-1 w-4 h-4 bg-brand rounded-full pulse-dot"></div>
         </div>
@@ -490,8 +357,7 @@
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
           </div>
           <span class="font-bold text-navy text-sm hidden sm:inline">ComplianceAuditPro</span>
@@ -499,23 +365,19 @@
           <span class="text-slate-500 text-sm hidden sm:inline">Audit Report</span>
         </div>
         <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
-          <span
-            class="inline-flex items-center gap-1.5 px-3 py-1 bg-warning-bg text-warning text-xs font-semibold rounded-full">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-warning-bg text-warning text-xs font-semibold rounded-full">
             <span class="w-1.5 h-1.5 bg-warning rounded-full"></span>
             Review Required
           </span>
-          <button onclick="showPage('home')"
-            class="text-sm text-slate-500 hover:text-navy font-medium transition-colors flex items-center gap-1.5">
+          <button onclick="showPage('home')" class="text-sm text-slate-500 hover:text-navy font-medium transition-colors flex items-center gap-1.5">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
             New Audit
           </button>
-          <button onclick="showLeadCapture()"
-            class="bg-navy hover:bg-navy-light text-white font-semibold py-2 px-3 sm:px-5 rounded-lg shadow-md shadow-navy/20 transition-all hover:shadow-navy/30 hover:-translate-y-0.5 flex items-center gap-2 text-sm">
+          <button onclick="showLeadCapture()" class="bg-navy hover:bg-navy-light text-white font-semibold py-2 px-3 sm:px-5 rounded-lg shadow-md shadow-navy/20 transition-all hover:shadow-navy/30 hover:-translate-y-0.5 flex items-center gap-2 text-sm">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
             <span class="hidden sm:inline">Download PDF Report</span>
           </button>
@@ -525,17 +387,13 @@
 
     <!-- Disclaimer Banner -->
     <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-4">
-      <div
-        class="bg-blue-50 border border-blue-200 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-start gap-2 sm:gap-3">
-        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+      <div class="bg-blue-50 border border-blue-200 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-start gap-2 sm:gap-3">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
         </svg>
         <div>
           <p class="text-xs sm:text-sm text-blue-800 font-medium">AI-Assisted Analysis — Not Legal Advice</p>
-          <p class="text-[11px] sm:text-xs text-blue-600 mt-0.5">This report is generated by AI and may contain
-            inaccuracies. Always consult a qualified compliance officer before making regulatory decisions.</p>
+          <p class="text-[11px] sm:text-xs text-blue-600 mt-0.5">This report is generated by AI and may contain inaccuracies. Always consult a qualified compliance officer before making regulatory decisions.</p>
         </div>
       </div>
     </div>
@@ -555,16 +413,12 @@
 
           <!-- Preview Area -->
           <div class="bg-slate-50 rounded-2xl p-4 relative">
-            <div id="preview-container"
-              class="w-full rounded-xl overflow-hidden bg-white shadow-sm relative flex items-center justify-center">
-              <img id="preview-image" class="w-full hidden transition-transform duration-200"
-                style="max-height: 300px; display: none;" alt="Uploaded asset" />
-              <video id="preview-video" class="w-full hidden transition-transform duration-200"
-                style="max-height: 300px;" controls muted></video>
+            <div id="preview-container" class="w-full rounded-xl overflow-hidden bg-white shadow-sm relative flex items-center justify-center">
+              <img id="preview-image" class="w-full hidden transition-transform duration-200" style="max-height: 300px; display: none;" alt="Uploaded asset" />
+              <video id="preview-video" class="w-full hidden transition-transform duration-200" style="max-height: 300px;" controls muted></video>
               <div id="preview-placeholder" class="text-slate-300 text-sm py-20">No preview available</div>
               <!-- Annotation layer will be positioned exactly over the rendered image by JS -->
-              <div id="annotation-layer" class="absolute pointer-events-none"
-                style="top:0;left:0;width:100%;height:100%;"></div>
+              <div id="annotation-layer" class="absolute pointer-events-none" style="top:0;left:0;width:100%;height:100%;"></div>
             </div>
           </div>
 
@@ -582,23 +436,16 @@
 
         <!-- Framework Tabs -->
         <div class="flex items-center gap-1 mb-4 bg-slate-50 rounded-xl p-1 w-fit">
-          <button id="tab-micar"
-            class="px-4 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-navy shadow-sm"
-            onclick="switchTab('micar')">MiCAR</button>
-          <button id="tab-mifid"
-            class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-slate-600"
-            onclick="switchTab('mifid')">MiFID II</button>
+          <button id="tab-micar" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all bg-white text-navy shadow-sm" onclick="switchTab('micar')">MiCAR</button>
+          <button id="tab-mifid" class="px-4 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-slate-600" onclick="switchTab('mifid')">MiFID II</button>
         </div>
 
         <!-- Search -->
         <div class="relative mb-5">
-          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
           </svg>
-          <input type="text" placeholder="Search rules..."
-            class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+          <input type="text" placeholder="Search rules..." class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
         </div>
 
         <!-- Findings List -->
@@ -611,28 +458,26 @@
           <div class="flex items-center gap-4 mb-5">
             <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl flex-1">
               <span class="text-2xl font-bold text-navy" id="total-count">12</span>
-              <span class="text-xs text-slate-400 leading-tight">Total<br />Rules</span>
+              <span class="text-xs text-slate-400 leading-tight">Total<br/>Rules</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-violation-bg rounded-xl flex-1">
               <span class="text-2xl font-bold text-violation" id="violation-count">3</span>
-              <span class="text-xs text-violation/70 leading-tight">Violations<br />Found</span>
+              <span class="text-xs text-violation/70 leading-tight">Violations<br/>Found</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-warning-bg rounded-xl flex-1">
               <span class="text-2xl font-bold text-warning" id="warning-count">3</span>
-              <span class="text-xs text-warning/70 leading-tight">Warnings<br />Flagged</span>
+              <span class="text-xs text-warning/70 leading-tight">Warnings<br/>Flagged</span>
             </div>
             <div class="flex items-center gap-2 px-3 py-2 bg-passed-bg rounded-xl flex-1">
               <span class="text-2xl font-bold text-passed" id="passed-count">6</span>
-              <span class="text-xs text-passed/70 leading-tight">Rules<br />Passed</span>
+              <span class="text-xs text-passed/70 leading-tight">Rules<br/>Passed</span>
             </div>
           </div>
 
           <!-- CTA Button -->
-          <button onclick="showLeadCapture()"
-            class="w-full bg-navy hover:bg-navy-light text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-navy/20 transition-all hover:shadow-navy/30 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm">
+          <button onclick="showLeadCapture()" class="w-full bg-navy hover:bg-navy-light text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-navy/20 transition-all hover:shadow-navy/30 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
             Download Full PDF Report
           </button>
@@ -644,11 +489,9 @@
 
   <!-- ======================== LEAD CAPTURE MODAL ======================== -->
   <div id="lead-modal" class="fixed inset-0 z-50 items-center justify-center p-4 hidden">
-    <div class="modal-backdrop absolute inset-0 bg-navy/60 backdrop-blur-sm" id="lead-backdrop"
-      onclick="hideLeadCapture()"></div>
+    <div class="modal-backdrop absolute inset-0 bg-navy/60 backdrop-blur-sm" id="lead-backdrop" onclick="hideLeadCapture()"></div>
     <div class="modal-content relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-auto p-8 z-10">
-      <button id="lead-close-btn" onclick="hideLeadCapture()"
-        class="absolute top-4 right-4 w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+      <button id="lead-close-btn" onclick="hideLeadCapture()" class="absolute top-4 right-4 w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
         <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -657,33 +500,27 @@
       <div class="text-center mb-6">
         <div class="w-14 h-14 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <svg class="w-7 h-7 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
           </svg>
         </div>
         <h3 id="lead-modal-title" class="text-xl font-bold text-navy">Get Your Full Report</h3>
-        <p id="lead-modal-desc" class="text-slate-400 text-sm mt-1">Enter your details to download the detailed
-          compliance report as PDF.</p>
+        <p id="lead-modal-desc" class="text-slate-400 text-sm mt-1">Enter your details to download the detailed compliance report as PDF.</p>
       </div>
 
       <form id="lead-form" onsubmit="handleLeadSubmit(event)" class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-navy mb-1.5">Full Name</label>
-          <input type="text" required placeholder="Jane Smith"
-            class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+          <input type="text" required placeholder="Jane Smith" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
         </div>
         <div>
           <label class="block text-sm font-medium text-navy mb-1.5">Work Email</label>
-          <input type="email" required placeholder="jane@company.com"
-            class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+          <input type="email" required placeholder="jane@company.com" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
         </div>
         <div>
           <label class="block text-sm font-medium text-navy mb-1.5">Company</label>
-          <input type="text" required placeholder="Acme Financial"
-            class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
+          <input type="text" required placeholder="Acme Financial" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all" />
         </div>
-        <button type="submit"
-          class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 hover:-translate-y-0.5 text-sm mt-2">
+        <button type="submit" class="w-full bg-brand hover:bg-brand-light text-white font-semibold py-3 rounded-xl shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 hover:-translate-y-0.5 text-sm mt-2">
           Download PDF Report
         </button>
         <p class="text-xs text-slate-400 text-center">By submitting you agree to our Privacy Policy. No spam, ever.</p>
@@ -698,8 +535,7 @@
         </div>
         <h3 class="text-xl font-bold text-navy">Report Sent!</h3>
         <p class="text-slate-400 text-sm mt-1">Check your inbox for the full compliance report PDF.</p>
-        <button onclick="hideLeadCapture()"
-          class="mt-5 text-sm text-brand font-semibold hover:text-brand-light transition-colors">Close</button>
+        <button onclick="hideLeadCapture()" class="mt-5 text-sm text-brand font-semibold hover:text-brand-light transition-colors">Close</button>
       </div>
     </div>
   </div>
@@ -709,8 +545,7 @@
   <div id="error-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden">
     <div class="error-toast bg-violation text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 max-w-md">
       <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
       </svg>
       <span id="error-toast-message" class="text-sm font-medium">An error occurred</span>
     </div>
@@ -723,29 +558,6 @@
     let uploadedFile = null;
     let currentFindings = null; // Stores the API response
     let analysisController = null; // AbortController for in-flight requests
-    const LOCAL_API_ORIGIN = 'http://127.0.0.1:3001';
-
-    function getApiBase() {
-      // When opened as file:// or from a non-http(s) origin, use local backend directly.
-      if (window.location.protocol === 'file:' || !window.location.origin.startsWith('http')) {
-        return LOCAL_API_ORIGIN;
-      }
-      return '';
-    }
-
-    async function apiFetch(path, options) {
-      const base = getApiBase();
-
-      try {
-        return await fetch(`${base}${path}`, options);
-      } catch (err) {
-        // Fallback for cases where the page is served from another local origin/port.
-        if (base === '' && window.location.origin !== LOCAL_API_ORIGIN) {
-          return fetch(`${LOCAL_API_ORIGIN}${path}`, options);
-        }
-        throw err;
-      }
-    }
 
     // Scan limit
     const MAX_FREE_SCANS = 3;
@@ -820,41 +632,6 @@
       setTimeout(() => toast.classList.add('hidden'), 5000);
     }
 
-    // Show informational message when image is not a financial promotion
-    function showNotFinancialPromotion(reason) {
-      showPage('home');
-
-      // Create and show an informational banner
-      const banner = document.createElement('div');
-      banner.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50';
-      banner.id = 'not-financial-toast';
-      banner.innerHTML = `
-        <div class="bg-blue-600 text-white px-6 py-4 rounded-xl shadow-lg max-w-lg" style="animation: toastIn 0.3s ease-out;">
-          <div class="flex items-start gap-3">
-            <svg class="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-            </svg>
-            <div>
-              <p class="font-semibold text-sm mb-1">Not a Financial Promotion</p>
-              <p class="text-xs text-blue-100 leading-relaxed">${reason}</p>
-              <p class="text-xs text-blue-200 mt-2">Please upload a financial marketing asset (e.g., investment ad, crypto promotion) to run a compliance audit.</p>
-            </div>
-            <button onclick="this.closest('#not-financial-toast').remove()" class="flex-shrink-0 ml-2 hover:text-blue-200 transition-colors">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(banner);
-
-      // Auto-remove after 8 seconds
-      setTimeout(() => {
-        if (banner.parentNode) banner.remove();
-      }, 8000);
-    }
-
     // Process uploaded file — calls the backend API
     async function processFile(file) {
       // Check scan limit
@@ -907,7 +684,7 @@
         formData.append('file', file);
         formData.append('framework', currentFramework);
 
-        const response = await apiFetch('/api/analyze', {
+        const response = await fetch('/api/analyze', {
           method: 'POST',
           body: formData,
           signal: analysisController.signal,
@@ -917,13 +694,6 @@
 
         if (!response.ok || !data.success) {
           throw new Error(data.error || 'Analysis failed. Please try again.');
-        }
-
-        // Check if the image was classified as not a financial promotion
-        if (data.not_financial_promotion) {
-          stepTimers.forEach(t => clearTimeout(t));
-          showNotFinancialPromotion(data.rejection_reason || 'This image does not appear to be a financial promotion or marketing communication.');
-          return;
         }
 
         currentFindings = data.findings;
@@ -947,10 +717,7 @@
         if (err.name === 'AbortError') return; // User navigated away
 
         console.error('Analysis error:', err);
-        const message = err.message === 'Failed to fetch'
-          ? 'Cannot reach backend. Open http://127.0.0.1:3001 and ensure npm start is running.'
-          : (err.message || 'An unexpected error occurred. Please try again.');
-        showError(message);
+        showError(err.message || 'An unexpected error occurred. Please try again.');
         showPage('home');
       }
     }
@@ -1301,7 +1068,7 @@
       submitBtn.textContent = 'Submitting...';
 
       try {
-        const response = await apiFetch('/api/lead', {
+        const response = await fetch('/api/lead', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, company }),
@@ -1315,10 +1082,7 @@
         document.getElementById('lead-form').classList.add('hidden');
         document.getElementById('lead-success').classList.remove('hidden');
       } catch (err) {
-        const message = err.message === 'Failed to fetch'
-          ? 'Cannot reach backend. Open http://127.0.0.1:3001 and ensure npm start is running.'
-          : (err.message || 'Failed to submit. Please try again.');
-        showError(message);
+        showError(err.message || 'Failed to submit. Please try again.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Download PDF Report';
       }
@@ -1359,5 +1123,4 @@
   </script>
 
 </body>
-
 </html>
