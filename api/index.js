@@ -6,6 +6,11 @@ const fs = require('fs');
 const { OpenAI } = require('openai');
 const nodemailer = require('nodemailer');
 
+const prompts = {
+  micar: require('../prompts/micar'),
+  mifid: require('../prompts/mifid')
+};
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -51,8 +56,11 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
       return res.status(500).json({ success: false, error: 'LiteLLM API key not configured. Set LITELLM_API_KEY in .env file.' });
     }
 
-    // Load prompt for the selected framework
-    const prompt = require(`./prompts/${framework}.js`);
+    // Load prompt for the selected framework statically
+    const prompt = prompts[framework];
+    if (!prompt) {
+      return res.status(400).json({ success: false, error: 'Invalid framework mapping.' });
+    }
 
     // Prepare base64 image for OpenAI vision format
     const base64Data = req.file.buffer.toString('base64');
