@@ -34,11 +34,7 @@ const upload = multer({
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '../public')));
 
-// LiteLLM client (OpenAI-compatible)
-const client = new OpenAI({
-  apiKey: process.env.LITELLM_API_KEY,
-  baseURL: process.env.LITELLM_BASE_URL,
-});
+// LiteLLM client (OpenAI-compatible) will be instantiated per-request
 
 app.post('/api/analyze', upload.single('file'), async (req, res) => {
   try {
@@ -55,6 +51,11 @@ app.post('/api/analyze', upload.single('file'), async (req, res) => {
     if (!process.env.LITELLM_API_KEY || process.env.LITELLM_API_KEY === 'your-litellm-api-key') {
       return res.status(500).json({ success: false, error: 'LiteLLM API key not configured. Set LITELLM_API_KEY in .env file.' });
     }
+
+    const client = new OpenAI({
+      apiKey: process.env.LITELLM_API_KEY,
+      baseURL: process.env.LITELLM_BASE_URL,
+    });
 
     // Load prompt for the selected framework statically
     const prompt = prompts[framework];
